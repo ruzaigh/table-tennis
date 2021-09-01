@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+       "module": "commonjs",
+       "moduleResolution": "node",
+       "pretty": true,
+       "target": "es6",
+       "outDir": "./dist",
+       "baseUrl": "./src",
+       "typeRoots": ["./src/types"],
+       "resolveJsonModule": true,
+    },
+    "include": [
+       "src/**/*.ts",
+       "custom.d.ts"
+    ],
+    "exclude": [
+       "node_modules"
+    ]
+}
