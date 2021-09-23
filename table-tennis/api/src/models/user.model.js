@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs')
 const { promises } = require('fs');
 const { resolve } = require('path');
 //JWT Secret
@@ -63,12 +64,93 @@ UserSchema.methods.generateRefreshAuthToken = function(){
         })
     })
 }
+UserSchema.methods.createSession = function(){
+    let user = this;
+
+    return user.generateRefreshAuthToken().then((refreshToken) =>{
+        return saveSessionToDatabase(user, refreshToken)
+    }).then((refreshToken) =>{
+        //saved to databasse successfully
+        //now return the refresh token
+        return refreshToken;
+    }).catch((err) =>{
+        return Promise.reject('Failed to save session to database.\n' + err);
+    })
+}
+
+/**Modal Mehtods (static methods) */
+UserSchema.statics.findByIdAndToken = function(_id, token){
+    //finds user by id and token
+    //used in auth middleware (verifySession)
+    const User = this;
+
+    return User.findOne({
+        _id,
+        'sessions.token': token
+    });
+}
+UserSchema.statics.findByCredentials = function(email, password){
+    let User = this;
+    return User.findOne({ email}).then((User) =>{
+        if(!User)return Promise.reject();
+
+        return new Promise((resolve, resject) =>{
+            bcrypt.compare(password, user.password, (err, res)=>{
+                if(res)resolve(user);
+                else{
+                    reject();
+                }
+            })
+        })
+    })
+}
+
+UserSchema.statics.hasRefreshTokenExpired = ( expiresAt ) =>{
+    let secondsSinceEpoch = Date.now() / 1000;
+    if (expiresAt > secondsSinceEpoch){
+        ///hasnt expired
+        return false
+    }else{
+        //has expired
+        return true
+    }
+}
+
+/**MiddleWare */
+//Before a userdocument is saved, this code tuns 
+UserSchema.pre('save', function(next){
+    let User = this;
+    let cosrFactor = 10;
+
+    if(User.isModified('password')){
+        //if the password field has been edited/changed then run this code
+
+        //Generate salt and hash password
+        bcrypt.genSalt(cosrFactor,(err, salt) =>{
+            bcrypt.hash(User.password, salt, (err, hash)=> {
+                user.password = hash;
+                next();
+            })
+        })
+    }else{
+        next();
+    }
+});
+
+/** Helper methods  */
 let saveSessionToDatabase = (user, refreshToken) =>{
     //save session to database
     return new Promise((resolve, reject) =>{
         let expiresAt = generateRefreshTokenExpiryTime();
 
         user.sessions.push({ 'token': refreshToken, expiresAt});
+
+        user.save().then(() =>{
+            //saved session  successfully
+            return resolve(refreshToken);
+        }).catch((err) =>{
+            reject(err);
+        });
     })
 }
 let generateRefreshTokenExpiryTime = () =>{
@@ -76,3 +158,7 @@ let generateRefreshTokenExpiryTime = () =>{
     let secondsUntilExpire = ((daysUntilExpire * 24) * 60) * 60;
     return((Date.now() / 1000) + secondsUntilExpire);
 }
+
+const User = mongoose.model('User', UserSchema);
+
+module.exports = { User}

@@ -1,17 +1,17 @@
-import app from "./config/app";
-import * as dotenv from 'dotenv';
-import DbClient from "./services/db-client";
+// import app from "./config/app";
+// import * as dotenv from 'dotenv';
+// import DbClient from "./services/db-client";
 
 
-dotenv.config();
+// dotenv.config();
 
-const environment = app.settings.env || 'development';
+// const environment = app.settings.env || 'development';
 
-const PORT = process.env.PORT || 4000
+// const PORT = process.env.PORT || 4000
 
-app.listen(PORT, () => {
-    console.log('Express server listening on port ' + PORT);
-});
+// app.listen(PORT, () => {
+//     console.log('Express server listening on port ' + PORT);
+// });
 
 
 // DbClient.connect().then(() => {
