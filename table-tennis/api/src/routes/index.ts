@@ -1,9 +1,9 @@
-// import { Router } from "express";
+import { Router } from "express";
 
-// const router = Router()
+const router = Router()
 
-// router.use('/ruz', (req, res) => {
-//     res.status(200).json('njxnfndfnbdfgbfnmgbfgmf')
-// })
+router.use('/ruz', (req, res) => {
+    res.status(200).json('njxnfndfnbdfgbfnmgbfgmf')
+})
 
-// export default router
+export default router
