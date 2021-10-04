@@ -10,11 +10,6 @@ const environment = app.settings.env || 'development';
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-    console.log('Express server listening on port ' + PORT);
-});
-
-
 DbClient.connect().then(() => {
   console.log("connected to the database");
   

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
-import { AdminComponent } from './pages/admin/admin.component';
-import { Router, RouterModule } from '@angular/router';
+import { ComponentsModule } from './components.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,25 +15,16 @@ import { Router, RouterModule } from '@angular/router';
     SignUpComponent,
     LoginComponent,
     HomeComponent,
-    AdminComponent
+
   ],
   imports: [
+    //if this import gets bigger make use of the components.module
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot([
-      {
-        path: '',
-        component: HomeComponent
-      },
-      {
-        path: 'login',
-        component: LoginComponent
-      },
-      {
-        path: 'admin',
-        component: AdminComponent
-      }
-    ])
+    ComponentsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

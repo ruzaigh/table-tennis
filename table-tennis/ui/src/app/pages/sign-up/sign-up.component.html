@@ -1,5 +1,39 @@
 <div class="sign-up-container">
-    <div class="sign-up-wrapper">
-        
-    </div>
+    <form [formGroup]="signUpForm">
+        <div class="heading">Sign Up</div>
+        <div class="sign-up-wrapper">
+            <div class="title">Name </div>
+            <input type="text" placeholder="John Dou" formControlName="name" (ionChange)="stripBadCharsFromUsername()"
+                required>
+            <div class="title">UserName </div>
+            <input type="text" placeholder="e.g. Leonardo" formControlName="username"
+                (ionChange)="stripBadCharsFromUsername()" maxlength="16">
+            <div class="title">Email </div>
+            <input type="email" placeholder="JohnDou@gmail.com" formControlName="email"
+                pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" required>
+            <div class="title">Password</div>
+            <!-- Dont Forget to add in show and hide function -->
+            <input [type]="showPassword ? 'text' : 'password'" #validatePasswords formControlName="password"
+                placeholder="eg. makeThisSuperSecure" required>
+            <!-- get toggle to work -->
+            <!-- <img src="../../../assets/icons/eye (1).png"> -->
+            <!-- <ion-icon (click)="togglePassword()" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"> -->
+            <div class="title">Confirm Password</div>
+            <input [type]="showConfirmPassword  ? 'text' : 'password'" formControlName="confirmPassword">
+            <!-- <ion-icon (click)="toggleConfirmPassword()" [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'">
+      </ion-icon> -->
+            <!-- <img  src="../../../assets/icons/invisible.png"> -->
+            <button (click)="signUp()" type="submit"> Sign Up</button>
+        </div>
+        <div class="error-container">
+            <div *ngIf="errors && errors.length > 0 " class="errors">
+              <h5>Please fix the following:</h5>
+              <ul>
+                <li class="error" *ngFor="let error of errors">
+                  {{error}}
+                </li>
+              </ul>
+            </div>
+          </div>
+    </form>
 </div>
