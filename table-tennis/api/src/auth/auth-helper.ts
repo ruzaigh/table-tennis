@@ -8,7 +8,7 @@ dotenv.config();
 export const authenticate = async (req: Request, res: Response, next) => {
     let apiKey = req.headers['apiKey'];
     if (process.env.API_KEY && apiKey === process.env.API_KEY) {
-        req.userId = req.body.userId;
+        (req['userId']) = req.body.userId;
         next();
         return;
     }
@@ -16,8 +16,8 @@ export const authenticate = async (req: Request, res: Response, next) => {
     decodeJwt(token).then(async (decodedToken: any) => {
         if (decodedToken && decodedToken.data) {
             if (decodedToken.data._id) {
-                req.userId = decodedToken.data._id
-                req.username = decodedToken.data.username
+                (req['userId']) = decodedToken.data._id,
+                (req['username']) = decodedToken.data.username
             } else {
                 res.sendStatus(403);
             }
@@ -33,8 +33,8 @@ export const authenticateRole = (role) => {
         decodeJwt(token).then((decodedToken: any) => {
             if (decodedToken && decodedToken.data) {
                 if (decodedToken.data.roles.includes(res)) {
-                    req.userId = decodedToken.data._id
-                    req.username = decodedToken.data.username
+                    (req['userId']) = decodedToken.data._id,
+                    (req['username']) = decodedToken.data.username
                     next()
                 } else {
                     res.sendStatus(403);
@@ -52,8 +52,8 @@ export const noAuth = async (req: Request, res: Response, next) => {
         decodeJwt(token).then((decodedToken: any) => {
             if (decodedToken && decodedToken.data) {
                 if (decodedToken.data._id) {
-                    req.userId = decodedToken.data._id
-                    req.username = decodedToken.data.username
+                    (req['userId']) = decodedToken.data._id,
+                    (req['username']) = decodedToken.data.username
                 }
                 next();
             }

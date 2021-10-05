@@ -79,7 +79,9 @@ export class SignUpComponent implements OnInit {
       this.errors = [];
       // create your own loader function
       // this.helpers.showLoader();
-      this.userService.signUp(this.signUpForm.value, this.code)
+      this.userService.signUp(this.signUpForm.value)
+
+
         .subscribe(async (response: any) => {
           // get token and set it locally
           localStorage.setItem("token", response.DATA.token);
@@ -88,18 +90,18 @@ export class SignUpComponent implements OnInit {
           // this.helpers.dismissLoader();
 
           // save user details on local storage for easy retrieval
-          if (response.STATUS === 'FAILURE'){
+          if (response.STATUS === 'FAILURE') {
             // create a toast like utils
             // this.utils.showToast(response.MESSAGE, 'warning');
             // create your own loader function
             // this.helpers.dismissLoader();
             console.log(response.MESSAGE, 'warning');
             return;
-          }else{
+          } else {
             this.userService.setUserData(response.DATA.user);
             this.navigateToHome();
           }
-        }, (error: any)=>{
+        }, (error: any) => {
           console.log(error)
         })
     }
@@ -116,10 +118,10 @@ export class SignUpComponent implements OnInit {
   toggleConfirmPassword() {
     this.showConfirmPassword = !this.showConfirmPassword
   }
-    // navigates the user to the desired page
-    navigateToHome() {
-      this.route.navigate(["/home"]);
-    }
+  // navigates the user to the desired page
+  navigateToHome() {
+    this.route.navigate(["/home"]);
+  }
   // Validates password and confirmation password
   validatePasswords(formGroup: FormGroup) {
     const { value: password } = formGroup.controls["password"];

@@ -23,6 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
         delete newUser.password
     } else failureResponse("Incorrect body", {}, res);
 
+
     //Check db for existance
     let foundUser = await DbClient.db.collection("user").findOne({
         $or: [
@@ -30,7 +31,6 @@ export const createUser = async (req: Request, res: Response) => {
             { username: { $regex: new RegExp(`^${user.username}$`, "i") } },
         ]
     }); // find them by email
-
     if (foundUser) return failureResponse("User already exists", {}, res);
 
     //new user, so lets add the user to the DB
@@ -54,14 +54,16 @@ export const createUser = async (req: Request, res: Response) => {
             };
             await DbClient.db
                 .collection("verificationCodes")
-                .insertOne(verificationData)
+                .insertOne(verificationData).then(() => {
+                    successResponse('User inserted successfully', { user, token: generateAccessToken(user) }, res);
+                })
         })
         .catch((insertErr) => {
             console.log(insertErr)
             return failureResponse("User already exists", {}, res);
         });
 };
-//check if the email already exists on the system
+//ch eck if the email already exists on the system
 export const checkEmailExist = async (req: Request, res: Response) => {
     try {
         let email = req.body.email;
@@ -86,27 +88,27 @@ export const checkEmailExist = async (req: Request, res: Response) => {
  */
 export const isEmailVerified = async (req: Request, res: Response) => {
     try {
-      DbClient.db
-        .collection("user")
-        .findOne({ _id: new ObjectID(req.userId) })
-        .then(
-          (result: any) => {
-            successResponse(
-              "Email verification result",
-              { emailVerified: result.emailVerified },
-              res
+        DbClient.db
+            .collection("user")
+            .findOne({ _id: new ObjectID(req['userId']) })
+            .then(
+                (result: any) => {
+                    successResponse(
+                        "Email verification result",
+                        { emailVerified: result.emailVerified },
+                        res
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    failureResponse("Email verification failed", {}, res);
+                }
             );
-          },
-          (err) => {
-            console.log(err);
-            failureResponse("Email verification failed", {}, res);
-          }
-        );
     } catch (error) {
-      console.log(error);
-      failureResponse("FAIL", {}, res);
+        console.log(error);
+        failureResponse("FAIL", {}, res);
     }
-  };
+};
 /**
  * set status for EMAIL validation (not like a pro verified user)
  * @param req must contain: id of user to verify, their unique OTP
@@ -157,22 +159,22 @@ export const updateUserVerificationStatus = async (
  * 
  * CyberSec Risk rating: low
  */
-export const login = (req: Request, res: Response) =>{
+export const login = (req: Request, res: Response) => {
     let LogingDetails: ILogin = req.body;
     DbClient.db
-    .collection("user")
-    .findOne({ email: { $regex: LogingDetails.email, $options: "i"}})
-    .then(async (dbres) =>{
-        //check id password hash's match
-        if( dbres && bcrypt.compareSync(LogingDetails.password, dbres.passwordHash)){
-            //Generate a jwt
-            delete dbres.passwordHash;
-            let jwt = generateAccessToken(dbres);
-            successResponse("SUCCESS", { jwt, user: dbres }, res);
-        }else{
-            successResponse("User not found ", {}, res);
-        }
-    });
+        .collection("user")
+        .findOne({ email: { $regex: LogingDetails.email, $options: "i" } })
+        .then(async (dbres) => {
+            //check id password hash's match
+            if (dbres && bcrypt.compareSync(LogingDetails.password, dbres.passwordHash)) {
+                //Generate a jwt
+                delete dbres.passwordHash;
+                let jwt = generateAccessToken(dbres);
+                successResponse("SUCCESS", { jwt, user: dbres }, res);
+            } else {
+                successResponse("User not found ", {}, res);
+            }
+        });
 }
 
 
@@ -190,7 +192,7 @@ export interface IUser {
     passwordHash?: string;
     username: string
 }
-export interface ILogin{
+export interface ILogin {
     email: string;
     password: string;
 }

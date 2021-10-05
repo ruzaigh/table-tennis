@@ -1,1 +1,33 @@
-<p>Login</p>
+<div class="login-container">
+    <form class="login-form">
+        <div class="heading">Login</div>
+        <div class="login-wrapper">
+            <div class="title">Email</div>
+            <input
+            type="email" 
+            placeholder="johnsnow@got.com" 
+            [(ngModel)]="email" 
+            name="email" 
+            required>
+        </div>
+        <div class="login-wrapper">
+            <div class="title">Password</div>
+            <!-- <input
+            type="password" 
+            [(ngModel)]="password" 
+            name="pass" 
+            [type]="showPassword ? 'text' : 'password'" 
+            required
+            (keyup.enter)="login()"> -->
+            <input
+            type="password" 
+            [(ngModel)]="password" 
+            name="pass" 
+            required
+            (keyup.enter)="login()">
+        </div>
+        <button type="submit" [disabled]="!email || !password" (click)="login()">
+            Login
+        </button>
+    </form>
+</div>
