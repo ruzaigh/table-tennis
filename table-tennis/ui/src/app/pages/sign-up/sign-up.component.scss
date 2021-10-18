@@ -99,3 +99,47 @@
     }
   }
 }
+@media(min-width:768px) {
+  .container {
+    form {
+      .heading {
+      }
+  
+      .sign-up-container {
+        width: 50%;
+        margin: 0 auto;
+  
+        .sign-up-wrapper {
+          margin: 0 40px;
+          .greeting-text {
+          }
+          .input-block {
+            width: 100%;
+            .title {
+            }
+  
+            input {
+              width: 100%;
+            }
+            :focus-visible {
+              outline: unset;
+              border: none;
+            }
+          }
+          button {
+          }
+  
+          .login-text {
+            a {
+            }
+          }
+        }
+  
+        .welcome-wrapper {
+        }
+  
+        .error-container {}
+      }
+    }
+  }
+}
